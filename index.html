@@ -5,12 +5,40 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WFH</title>
+    <style>
+        section {
+            margin-bottom: 8px;
+        }
+        .label {
+            display: inline-block;
+            width: 4.5em;
+        }
+        input {
+            display: inline-block;
+            box-sizing: border-box;
+            width: 130px;
+        }
+        input.maker {
+            height: 24px;
+            text-indent: 1.5px;
+        }
+        button:hover {
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <form>
-        <input type="month" name="month">
+        <section>
+            <label for="month" class="label">申请月份</label>
+            <input type="month" name="month">
+            
+        </section>
+        <section>
+            <label for="maker" class="label">申请人</label>
+            <input class="maker" type="text" name="maker">
+        </section>
         <button>submit</button>
-        
     </form>
     <script>
         const WFH = buildWFH(1,2,5)
@@ -48,17 +76,23 @@
             const date = new Date()
             const [month] = document.getElementsByName('month')
             month.value = date.getFullYear() + '-' + (String(date.getMonth() + 1).padStart(2, '0'))
+
+            const [maker] = document.getElementsByName('maker')
+            maker.value = localStorage.getItem('maker')
         }
         function buildMessage(time) {
             const days = getMonthDays(time)
             const messageArray = filterDate(days, time)
             const result = messageArray.shift() + '年 ' + messageArray.join('、')
+            const [maker] = document.getElementsByName('maker')
+            let name = maker.value
+            localStorage.setItem('maker', name)
             return `高总：
 
   您好，经与客户确认，现申请 ${result}  在家办公，已附上客户截图，望批准通过。
 此致
     敬礼
-                                                     申请人：李鑫`
+                                                     申请人：${name}`
         }
         function getMonthDays(time) {
             const date = new Date(time)
