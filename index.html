@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WFH</title>
+</head>
+<body>
+    <form>
+        <input type="month" name="month">
+        <button>submit</button>
+        
+    </form>
+    <script>
+        const WFH = buildWFH(1,2,5)
+        function buildWFH(...arr) {
+            const result = {}
+            for(let v of arr) {
+                result[v] = true
+            }
+            return result
+        }
+        void function() {
+            init();
+            const form = document.querySelector('form')
+            form.addEventListener('submit', (e) => {
+                e.preventDefault()
+                const {value} = form.elements['month']
+                if (!value) return alert('please select month')
+                const msg = buildMessage(value)
+                writeMsg(msg)
+            })
+
+        }();
+        function writeMsg (msg) {
+            if (!navigator.clipboard) {
+                alert(msg);
+                return
+            }
+            navigator.clipboard.writeText(msg).then(() => {
+                alert('WFH message has been copied!')
+            }, () => {
+                alert(msg);
+            });
+        }
+        function init() {
+            const date = new Date()
+            const [month] = document.getElementsByName('month')
+            month.value = date.getFullYear() + '-' + (String(date.getMonth() + 1).padStart(2, '0'))
+        }
+        function buildMessage(time) {
+            const days = getMonthDays(time)
+            const messageArray = filterDate(days, time)
+            const result = messageArray.shift() + '年 ' + messageArray.join('、')
+            return `高总：
+
+  您好，经与客户确认，现申请 ${result}  在家办公，已附上客户截图，望批准通过。
+此致
+    敬礼
+                                                     申请人：李鑫`
+        }
+        function getMonthDays(time) {
+            const date = new Date(time)
+            const month = date.getMonth()
+            date.setMonth(month + 1)
+            date.setDate(0)
+            return date.getDate()
+        }
+        function filterDate(days, time) {
+            const result = [new Date().getFullYear()];
+            for (let i = 1; i <= days; i++) {
+                const currentDay = `${time}-${i}`
+                const date = new Date(currentDay)
+                const day = date.getDay()
+                if (WFH[day]) {
+                    result.push((currentDay + '日').replace(result[0] + '-', '').replace('-', '月'))
+                }
+            }
+            return result
+        }
+    </script>
+</body>
+</html>
