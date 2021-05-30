@@ -55,7 +55,7 @@
             </select>
             <ul id="selected"></ul>
         </section>
-        <pre></pre>
+        <pre wrap id=pre></pre>
         <hr>
         <button>submit</button>
     </form>
@@ -74,7 +74,7 @@
 
         }();
         function buildPre(msg) {
-            const pre = document.querySelector('pre')
+            const pre = document.getElementById('pre')
             pre.innerHTML = msg
         }
         function getWFH() {
