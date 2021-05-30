@@ -53,6 +53,7 @@
                 <option value="5">星期五</option>
                 <option value="6">星期六</option>
             </select>
+            <ul id="selected"></ul>
         </section>
         <hr>
         <button>submit</button>
@@ -107,8 +108,34 @@
                         el.options[t].selected = true
                     }
                 }
+                buildSelected(getSelected(el), el)
+                el.addEventListener('change', e => {
+                    buildSelected(getSelected(el), el)
+                })
             } catch(e) {
                 console.info(e)
+            }
+            function getSelected(time) {
+                const result = []
+                Array.from(time.options).forEach(item => {
+                    if (item && typeof item === 'object') {
+                        if (item.selected) {
+                            result.push(item.value)
+                        }
+                    }
+                })
+                return result
+            }
+            function buildSelected(arr, el) {
+                const ul = document.getElementById('selected')
+                ul.innerHTML = ''
+                const fragment = document.createDocumentFragment()
+                arr.forEach(key => {
+                    const li = document.createElement('li')
+                    li.innerText = el.options[key].innerText
+                    fragment.appendChild(li)
+                })
+                ul.appendChild(fragment)
             }
         }
         function init() {
