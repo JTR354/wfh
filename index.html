@@ -152,8 +152,9 @@
             initRole('maker')
             initRole('checker')
             initTime()
-            document.getElementById('btn').addEventListener(e => {
+            document.getElementById('btn').addEventListener('click', e => {
                 localStorage.clear()
+                alert('clear cache succefull!')
             })
         }
         function buildRole(name) {
