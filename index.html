@@ -8,6 +8,7 @@
     <style>
         section {
             margin-bottom: 8px;
+            display: flex;
         }
         .label {
             display: inline-block;
@@ -18,7 +19,7 @@
             box-sizing: border-box;
             width: 130px;
         }
-        input.maker {
+        input[type="text"] {
             height: 24px;
             text-indent: 1.5px;
         }
@@ -32,23 +33,31 @@
         <section>
             <label for="month" class="label">申请月份</label>
             <input type="month" name="month">
-            
         </section>
         <section>
             <label for="maker" class="label">申请人</label>
-            <input class="maker" type="text" name="maker">
+            <input type="text" name="maker">
         </section>
+        <section>
+            <label for="checker" class="label">审批人</label>
+            <input type="text" name="checker">
+        </section>
+        <section>
+            <label for="time" class="label">时间段</label>
+            <select name="time" multiple="true" size="7">
+                <option value="0">星期日</option>
+                <option value="1">星期一</option>
+                <option value="2">星期二</option>
+                <option value="3">星期三</option>
+                <option value="4">星期四</option>
+                <option value="5">星期五</option>
+                <option value="6">星期六</option>
+            </select>
+        </section>
+        <hr>
         <button>submit</button>
     </form>
     <script>
-        const WFH = buildWFH(1,2,5)
-        function buildWFH(...arr) {
-            const result = {}
-            for(let v of arr) {
-                result[v] = true
-            }
-            return result
-        }
         void function() {
             init();
             const form = document.querySelector('form')
@@ -61,6 +70,19 @@
             })
 
         }();
+        function getWFH() {
+            const [time] = document.getElementsByName('time')
+            const result = {}
+            Array.from(time.options).forEach(item => {
+                if (item && typeof item === 'object') {
+                    if (item.selected) {
+                        result[item.value] = true
+                    }
+                }
+            })
+            localStorage.setItem('time', JSON.stringify(result))
+            return result
+        }
         function writeMsg (msg) {
             if (!navigator.clipboard) {
                 alert(msg);
@@ -72,27 +94,49 @@
                 alert(msg);
             });
         }
+        function initRole(name) {
+            const [role] = document.getElementsByName(name)
+            role.value = localStorage.getItem(name) || ''
+        }
+        function initTime() {
+            try {
+                const time = JSON.parse(localStorage.getItem('time'))
+                const [el] = document.getElementsByName('time')
+                if (time) {
+                    for (let t in time) {
+                        el.options[t].selected = true
+                    }
+                }
+            } catch(e) {
+                console.info(e)
+            }
+        }
         function init() {
             const date = new Date()
             const [month] = document.getElementsByName('month')
             month.value = date.getFullYear() + '-' + (String(date.getMonth() + 1).padStart(2, '0'))
-
-            const [maker] = document.getElementsByName('maker')
-            maker.value = localStorage.getItem('maker')
+            initRole('maker')
+            initRole('checker')
+            initTime()
+        }
+        function buildRole(name) {
+            const [el] = document.getElementsByName(name)
+            const value = el.value
+            localStorage.setItem(name, value)
+            return value
         }
         function buildMessage(time) {
             const days = getMonthDays(time)
             const messageArray = filterDate(days, time)
             const result = messageArray.shift() + '年 ' + messageArray.join('、')
-            const [maker] = document.getElementsByName('maker')
-            let name = maker.value
-            localStorage.setItem('maker', name)
-            return `高总：
+            const maker = buildRole('maker')
+            const checker = buildRole('checker')
+            return `${checker}：
 
   您好，经与客户确认，现申请 ${result}  在家办公，已附上客户截图，望批准通过。
 此致
     敬礼
-                                                     申请人：${name}`
+                                                     申请人：${maker}`
         }
         function getMonthDays(time) {
             const date = new Date(time)
@@ -103,6 +147,7 @@
         }
         function filterDate(days, time) {
             const result = [new Date().getFullYear()];
+            const WFH = getWFH()
             for (let i = 1; i <= days; i++) {
                 const currentDay = `${time}-${i}`
                 const date = new Date(currentDay)
