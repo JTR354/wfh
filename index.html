@@ -2,9 +2,15 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="renderer" content="webkit"/>
+    <meta name="force-rendering" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="maximum-scale=1.0,minimum-scale=1.0,user-scalable=0,width=device-width,initial-scale=1.0">
     <title>WFH</title>
+    <script src="https://unpkg.com/vconsole/dist/vconsole.min.js"></script>
+    <script>
+        var vConsole = new window.VConsole();
+    </script>
     <style>
         section {
             margin-bottom: 8px;
@@ -187,7 +193,7 @@
             const result = [new Date().getFullYear()];
             const WFH = getWFH()
             for (let i = 1; i <= days; i++) {
-                const currentDay = `${time}-${i}`
+                const currentDay = `${time}-${String(i).padStart(2, '0')}`
                 const date = new Date(currentDay)
                 const day = date.getDay()
                 if (WFH[day]) {
