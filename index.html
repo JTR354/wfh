@@ -55,6 +55,7 @@
             </select>
             <ul id="selected"></ul>
         </section>
+        <pre></pre>
         <hr>
         <button>submit</button>
     </form>
@@ -68,9 +69,14 @@
                 if (!value) return alert('please select month')
                 const msg = buildMessage(value)
                 writeMsg(msg)
+                buildPre(msg)
             })
 
         }();
+        function buildPre(msg) {
+            const pre = document.querySelector('pre')
+            pre.innerHTML = msg
+        }
         function getWFH() {
             const [time] = document.getElementsByName('time')
             const result = {}
