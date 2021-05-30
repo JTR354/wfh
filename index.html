@@ -57,7 +57,8 @@
         </section>
         <pre wrap id=pre></pre>
         <hr>
-        <button>submit</button>
+        <button type="submit">submit</button>
+        <button id="btn" type="button">clear cache</button>
     </form>
     <script>
         void function() {
@@ -151,6 +152,9 @@
             initRole('maker')
             initRole('checker')
             initTime()
+            document.getElementById('btn').addEventListener(e => {
+                localStorage.clear()
+            })
         }
         function buildRole(name) {
             const [el] = document.getElementsByName(name)
