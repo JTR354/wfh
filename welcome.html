@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>welcome home</title>
+</head>
+<style>
+  * {
+    padding: 0;
+    margin: 0;
+  }
+
+  main {
+    height: 100vh;
+    max-height: 100vh;
+    overflow: hidden;
+    background-color: black;
+    color: #fff;
+  }
+
+  main>h2 {
+    line-height: 20vh;
+    position: fixed;
+    top: 5%;
+    left: 0;
+    right: 0;
+    text-align: center;
+  }
+
+  main>h1 {
+    font-size: 10vw;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate3d(-50%, -50%, 0);
+    text-align: center;
+  }
+
+  div {
+    display: none;
+  }
+</style>
+
+<body>
+  <main>
+    <h2>距离李家弘回南沙还有:</h2>
+    <h1 id=notes>0d 00:00:00</h1>
+  </main>
+  <script>
+    void function () {
+      var notes = document.getElementById('notes')
+      function run() {
+        var now = new Date()
+        var target = new Date('2021-08-07')
+        var diff = target - now
+        var days = Math.floor(diff / (1000 * 60 * 60 * 24))
+        var level1 = diff % (24 * 3600 * 100)
+        var hours = String(Math.floor(level1 / (3600 * 1000))).padStart(2, '0')
+        var leave2 = level1 % (3600 * 1000)
+        var minutes = String(Math.floor(leave2 / (60 * 1000))).padStart(2, '0')
+        var leave3 = leave2 % (60 * 1000)
+        var seconds = String(Math.round(leave3 / 1000)).padStart(2, '0')
+        if (diff <= 0) return
+        notes.innerHTML = `${days}天 ${hours}:${minutes}:${seconds}`
+        window.requestAnimationFrame(run)
+      }
+      window.requestAnimationFrame(run)
+    }()
+  </script>
+</body>
+
+</html>
