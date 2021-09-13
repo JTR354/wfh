@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Cookbook</title>
+  <style>
+    select {
+      height: 10vw;
+    }
+    button {
+      height: 10vw;
+      margin: 0 5vw;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    hr {
+      opacity: 0;
+    }
+    #panel {
+      flex: 1;
+      position: absolute;
+      top: 53%;
+      left: 50%;
+      transform: translate3d(-50%, -50%, 0);
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h3>减肥食谱<button id="btn">随机选</button><select name="" id="time">
+    <option value="0">早餐</option>
+    <option value="1">中餐</option>
+    <option value="2">晚餐</option>
+  </select></h3>
+  <main>
+    <select name="" id="cook"></select>
+    <hr />
+    <h5>
+      <p>（ 早上 10 点 ） ( 中午 12 点)  ( 晚上 18:00)</p> 
+      <mark>大的原则每顿（肉2~4两， 蔬菜 0.5 斤，每天喝水2000~3000ml）</mark>
+    </h5>
+  </main>
+  <h1 id="panel"></h1>
+  <script>
+    let __oldSelect = null
+    let __selectedIndex = 1
+    const config = [createMorning(), createNoon(), createAfternoon()]
+    main()
+
+    function main() {
+      const select = document.getElementById('time')
+      select.value = __selectedIndex
+      createCook(config[__selectedIndex])
+      select.addEventListener('change', e => {
+        __selectedIndex = e.target.value
+        createCook(config[__selectedIndex])
+      }, false)
+
+      const btn = document.getElementById('btn')
+      let len = 0, lastSelectedIndex
+      btn.addEventListener('click', () => {
+        const current = [...config[__selectedIndex]]
+        if (lastSelectedIndex !== __selectedIndex) {
+          len = current.length
+        }
+        updateState(randomCook(current, len))
+      }, false)
+    }
+
+    function updateState([result, index]) {
+      panel.innerHTML = result
+      if (__oldSelect) {
+        __oldSelect.value = index
+      }
+    }
+
+    function randomCook(current, len) {
+      let bingo
+      const i = ~~(Math.random() * (len - 1))
+      bingo = current[i]
+      const t = current[len - 1]
+      current[len - 1] = bingo
+      current[i] = t
+      len--
+      return [bingo, i]
+    }
+
+    function showCookBook(current) {
+      const panel = document.querySelector('#panel')
+      const index = current.options.selectedIndex
+      panel.innerHTML = current.options[index].innerHTML
+    }
+
+    function createCook(arr = []) {
+      const oldSelect = __oldSelect || document.getElementById('cook')
+      const select = document.createElement('select')
+      arr.forEach(([text], i) => {
+        const option = document.createElement('option')
+        option.value = i
+        option.innerHTML = text
+        select.appendChild(option)
+      })
+      __oldSelect = select
+      oldSelect.parentNode.replaceChild(select, oldSelect)
+      select.addEventListener('change', (e) => {
+        showCookBook(e.target)
+      })
+      showCookBook(select)
+    }
+
+    // createCook(createMorning())
+    function createMorning() {
+      return [
+      [`鸡蛋 1-2 个 全脂牛奶200ml`],
+      [`防弹咖啡 1 杯（网购`],
+      [`黄油鸡蛋 鸡蛋 1-2 个黄油 10 克`],
+      [`奇亚籽水果布丁 奇亚籽5 克 蓝莓 10-30 颗 椰浆200 毫升`],
+      [`1-2 个煮鸡蛋 一杯全脂牛奶`],
+      [`1-2 个 椰 子 油 煎 鸡 蛋 一杯全脂牛奶`],
+      [`防弹咖啡 1 杯 250ml`],
+      [`1-2 个煮鸡蛋 无糖酸奶`],
+      [`黄油煎蛋+火腿片 2 个鸡蛋 20 克黄油 3 片火腿片`],
+      [`奇亚籽水果布丁 奇亚籽5 克 蓝莓 10-30 颗 椰浆200 毫升`],
+      [`牛油果+鸡蛋 1 个牛油果 1 个鸡蛋`],
+      [`防弹咖啡 1 杯`],
+      [`黄油炒蛋+香煎培根 2个鸡蛋 20 个黄油 4 片培根`],
+      [`1-2 个煮鸡蛋 一杯全脂牛奶`],
+      [`1-2 个煎鸡蛋 一杯无糖豆浆`],
+      [`1-2 个煮鸡蛋 无糖酸奶`],
+      [`防弹咖啡 1 杯`],
+      [`1-2 个煮鸡蛋 一杯全脂牛奶`],
+      [`1-2 个煎鸡蛋 一杯无糖豆浆`],
+      [`1-2 个煮鸡蛋 无糖酸奶`],
+      ]
+    }
+
+    function createNoon() {
+      return [
+        [`白萝卜烧牛肉 牛肉 200g白萝卜 200g`],
+        [`青椒五花肉 五花肉150克青椒 100 克 橄榄油 10 克时蔬 150g`],
+        [`莲白炒五花肉 莲白250克五花肉 150 克 橄榄油 10克`],
+        [`香煎三文鱼 三文鱼200克橄榄油 10 克 时蔬 200g`],
+        [`小鸡炖蘑菇+炒生菜 肌肉200g 蘑菇100g 生菜150g`],
+        [`家常红烧肉 五花肉200克橄榄油 15 克 时蔬 250g`],
+        [`鸡胸肉沙拉+芦笋西芹 鸡胸肉 200 克 芦笋 250 克`],
+        [`盐水虾 150g 蒜泥娃娃菜250g`],
+        [`剪三文鱼排+炒芹菜 100克三文鱼 150 克芹菜 时蔬 100g`],
+        [`香煎鸡 胸肉 +炒西 蓝花150 克鸡肉 150 克西蓝花橄榄油 10g`],
+        [`香煎柠檬虾 12 个鲜虾 1个柠檬 时蔬 250g`],
+        [`水煮鱼+炒空心菜 200g 鱼空心菜 250g`],
+        [`香煎鸡排+炒蘑菇 200 克鸡排 100 克蘑菇 时蔬150g`],
+        [`香煎鸡 胸肉 +炒西 蓝花150 克鸡胸肉 150 克西蓝花 时蔬 100g`],
+        [`番茄牛腩+炒生菜 牛腩200 克生菜 250 克`],
+        [`菜椒鸡胸肉+番茄生菜 鸡胸肉 200 克 生菜番茄 250克`],
+        [`鸡胸肉沙拉+芦笋西芹 鸡胸肉 200 克芦笋 150 克`],
+        [`鸡胸肉沙拉+紫甘蓝 鸡胸肉 200 克芦笋 150 克`],
+        [`煎牛排+时蔬菜 煎牛排200 克 蔬菜 250 克`],
+        [`煎三文鱼+胡萝卜丝 煎三文鱼 200 克 胡萝卜丝 150克 时蔬 100g`],
+        [`番茄牛腩+炒生菜 牛腩200 克生菜 150 克 番茄100g`],
+      ]
+    }
+
+    function createAfternoon() {
+      return [
+        [`肉末茄子 茄子 1 根猪肉糜150克 橄榄油20 克`],
+        [`椒盐鸡翅 鸡翅 5 个橄榄油 10 克 时蔬250g`],
+        [`木 耳 炒 猪 肉 猪 肉150g 木耳 100g 时蔬150g`],
+        [`牛油果培根沙拉 牛油果 1 个 培根 4 片黄瓜 1 根 亚麻籽油15 克`],
+        [`牛排佐西蓝花 牛排200 克 西蓝花 100 克黄油 30 克`],
+        [`清蒸鲈鱼 200g 鲈鱼清炒豆芽菜 250g`],
+        [`炒黄牛肉+蔬菜沙拉牛肉 150 克 蔬菜 250克`],
+        [`白菜炒五花肉+炒生菜 150 克五花肉 100克大白菜 150 克生菜`],
+        [`煎牛排+炒菠菜 15 克牛排 250g 菠菜`],
+        [`香煎五花肉+天然无糖酸奶 150 克五花肉 100 克酸奶`],
+        [`海带排骨汤+番茄炒蛋 150g 排骨 50g 海带 1 个鸡蛋 1 个番茄`],
+        [`白菜炒五花肉+炒生菜 100 克五花肉 100克大白菜 150 克生菜`],
+        [`番茄炖牛腩+炒菠菜150 克牛腩 1 个番茄150 克菠菜`],
+        [`红椒五花肉+天然酸奶 150 克五花肉 100克酸奶`],
+        [`煎培根+拌蘑菇 培根4 片蘑菇 150 克`],
+        [`西蓝花牛肉+清炒菠菜 牛肉 150 克 菠菜200 克`],
+        [`炒牛肉+蔬菜沙拉 牛肉 150 克 蔬菜 200 克`],
+        [`巴沙鱼+白蘑菇 巴沙鱼 200 克 白蘑菇 100克 时蔬 100g`],
+        [`鸡胸肉+炒番茄 鸡胸肉 150 克 炒番茄 200克`],
+        [`虾仁蒸蛋+凉拌茄子虾仁蒸蛋150克 胡萝卜丝 150 克`],
+        [`清蒸鲈鱼 200g 鲈鱼清炒豆芽菜 250g`],
+      ]
+    }
+  </script>
+</body>
+</html>
